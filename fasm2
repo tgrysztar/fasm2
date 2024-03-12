@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+DIR="$( dirname -- "$( readlink -f -- "$0"; )"; )"
+INCLUDE="$DIR/include;$INCLUDE" "$DIR/fasmg.x64" -iInclude\ \'fasm2.inc\' "$@"

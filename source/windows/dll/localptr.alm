@@ -1,0 +1,34 @@
+
+calminstruction push? arg*&
+	local	tmp, more
+	match	=dword? arg, arg
+	jno	regular
+	match	tmp], arg
+	jyes	regular
+	check	arg relativeto ebp & arg - ebp
+	jno	regular
+	arrange tmp, =push =eax
+	assemble tmp
+	arrange tmp, =lea =eax,[arg]
+	assemble tmp
+	arrange tmp, =xchg =eax,[=esp]
+	assemble tmp
+	exit
+      regular:
+	arrange tmp, =push arg
+	assemble tmp
+end calminstruction
+
+calminstruction mov? dest*,src*
+	local	tmp
+	match	tmp], src
+	jyes	regular
+	check	src relativeto ebp & src - ebp
+	jno	regular
+	arrange tmp, =lea dest,[src]
+	assemble tmp
+	exit
+    regular:
+	arrange tmp, =mov dest,src
+	assemble tmp
+end calminstruction
