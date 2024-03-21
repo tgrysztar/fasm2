@@ -2848,15 +2848,23 @@ iterate <instr,opcode>, jo,70h, jno,71h, jc,72h, jb,72h, jnae,72h, jnc,73h, jnb,
 		err	'invalid address'
 	    optimize:
 
-		check	@dest.jump_type <> 'near' & ( @dest.unresolved | ( @dest.imm relativeto $ & @dest.imm-($+2) < 80h & @dest.imm-($+2) >= -80h ) )
-		jyes	short
-		check	@dest.jump_type <> 'near' & @dest.imm relativeto $ & ( (@dest.imm-($+2)) and (1 shl (@dest.size*8) - 1) < 80h | (@dest.imm-($+2)) and (1 shl (@dest.size*8) - 1) >= 1 shl (@dest.size*8) - 80h )
-		jyes	short
-		check	@dest.jump_type = 'short'
-		jyes	relative_jump_out_of_range
+		check	@dest.jump_type = 'near'
+		jyes	explicit_near
 
+		check	@dest.unresolved | ( @dest.imm relativeto $ & @dest.imm-($+2) < 80h & @dest.imm-($+2) >= -80h )
+		jyes	short
+		check	@dest.imm relativeto $ & ( (@dest.imm-($+2)) and (1 shl (@dest.size*8) - 1) < 80h | (@dest.imm-($+2)) and (1 shl (@dest.size*8) - 1) >= 1 shl (@dest.size*8) - 80h )
+		jyes	short
+		check	@dest.jump_type = 'short' | x86.cpu < x86.80386.cpu
+		jno	near
+		emit	2
+		err	'relative jump out of range'
+		exit
+
+	    explicit_near:
 		call	x86.require.80386
 
+	    near:
 		emit	1, 0Fh
 		emit	1, 10h+opcode
 
@@ -2880,10 +2888,6 @@ iterate <instr,opcode>, jo,70h, jno,71h, jc,72h, jb,72h, jnae,72h, jnc,73h, jnb,
 		emit	1, @dest.imm
 		exit
 
-	    relative_jump_out_of_range:
-		emit	2
-		err	'relative jump out of range'
-		exit
 
 	    invalid_operand:
 		err	'invalid operand'

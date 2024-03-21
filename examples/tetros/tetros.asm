@@ -18,6 +18,8 @@
 format binary as 'img'
 org 7C00h
 
+use i386
+
 ROWS = 23
 COLUMNS = 12
 BACKGROUND = 0 ; background color, 0 for randomized
