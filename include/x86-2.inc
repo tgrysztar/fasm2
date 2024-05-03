@@ -174,7 +174,7 @@ end macro
 
 	; Some CPU presets:
 
-	i86: cpu = 0, fpu = 0, simd = 0, ext = 0
+	i8086: cpu = 0, fpu = 0, simd = 0, ext = 0
 	i186: cpu = 1, fpu = 0, simd = 0, ext = 0
 	i286: cpu = 2, fpu = 0, simd = 0, ext = 0
 	i386: cpu = 3, fpu = 0, simd = 0, ext = 0
@@ -209,6 +209,13 @@ end macro
 	rmdst: rmposition = 1
 	rm2: rmposition = 2
 	rmsrc: rmposition = 2
+
+	; Enable or disable automatic RIP-relative addressing in long mode.
+
+	ripauto: rip = 0
+	rip: rip = 1
+	norip: rip = -1
+	absolute: rip = -1
 
 purge ?, c1, c2, c3
 
@@ -583,7 +590,7 @@ iterate context, @dest,@src,@src2,@aux
 
 		      direct_address_in_long_mode:
 			compute displacement_size, 4
-			check	mode = 0 & segment_prefix < 64h
+			check	(x86.rip = 0 & mode = 0 & segment_prefix < 64h) | x86.rip = 1
 			jyes	auto_relative_address
 			check	mode = 16
 			jyes	invalid_address_size
