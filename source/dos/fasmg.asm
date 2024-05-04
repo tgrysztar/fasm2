@@ -11,6 +11,8 @@ STACK_SIZE = 4000h
 	stack	stack_segment:stack_top-stack_bottom
 	entry	loader:startup
 
+	use	i386
+
 segment loader use16
 
   startup:

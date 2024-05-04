@@ -123,6 +123,7 @@ struct WIN32_FIND_DATA
   dwReserved1	     dd ?
   cFileName	     TCHAR MAX_PATH dup (?)
   cAlternateFileName TCHAR 14 dup (?)
+		     align 4
 ends
 
 struct WIN32_FIND_DATAA
@@ -136,6 +137,7 @@ struct WIN32_FIND_DATAA
   dwReserved1	     dd ?
   cFileName	     db MAX_PATH dup (?)
   cAlternateFileName db 14 dup (?)
+		     align 4
 ends
 
 struct WIN32_FIND_DATAW

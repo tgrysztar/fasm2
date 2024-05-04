@@ -74,6 +74,7 @@ struct CHOOSEFONT
   wReserved	 dw ?
   nSizeMin	 dd ?
   nSizeMax	 dd ?
+		 dd ?
 ends
 
 struct PRINTDLG

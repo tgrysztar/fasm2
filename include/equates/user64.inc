@@ -67,6 +67,7 @@ ends
 struct CLIENTCREATESTRUCT
   hWindowMenu  dq ?
   idFirstChild dd ?
+	       dd ?
 ends
 
 struct MDICREATESTRUCT

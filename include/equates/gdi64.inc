@@ -68,6 +68,7 @@ struct TEXTMETRIC
   tmStruckOut	     db ?
   tmPitchAndFamily   db ?
   tmCharSet	     db ?
+		     align 4
 ends
 
 struct LOGBRUSH

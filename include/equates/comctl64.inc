@@ -45,6 +45,7 @@ struct HD_ITEM
   cchTextMax dd ?
   fmt	     dd ?
   lParam     dd ?
+	     dd ?
 ends
 
 struct HD_LAYOUT
@@ -132,6 +133,7 @@ struct REBARBANDINFO
   cx	      dd ?
   hbmBack     dq ?
   wID	      dd ?
+	      dd ?
 ends
 
 struct TOOLINFO
@@ -158,6 +160,7 @@ struct TOOLTIPTEXT
   szText   db 80 dup (?)
   hinst    dq ?
   uFlags   dd ?
+	   dd ?
 ends
 
 struct UDACCEL
@@ -192,6 +195,7 @@ struct LV_FINDINFO
   lParam      dq ?
   pt	      POINT
   vkDirection dd ?
+	      dd ?
 ends
 
 struct LV_HITTESTINFO
@@ -321,6 +325,7 @@ struct TC_ITEM
   cchTextMax  dd ?
   iImage      dd ?
   lParam      dd ?
+	      dd ?
 ends
 
 struct TC_HITTESTINFO
@@ -359,6 +364,7 @@ struct NM_DATETIMECHANGE
   nmhdr   NMHDR
   dwFlags dd ?
   st	  SYSTEMTIME
+	  dd ?
 ends
 
 struct NM_DATETIMESTRING
@@ -366,6 +372,7 @@ struct NM_DATETIMESTRING
   pszUserString dq ?
   st		SYSTEMTIME
   dwFlags	dd ?
+		dd ?
 ends
 
 struct NM_DATETIMEWMKEYDOWN

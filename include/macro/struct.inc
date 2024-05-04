@@ -437,13 +437,20 @@ macro struct?.check name
 						end if
 					end match
 					if name.label mod alignment > 0
-						display 'warning: ',`name,'.',`label,' not aligned to its natural boundary',10
+						repeat 1, natural: alignment
+							display 'warning: ',`name,'.',`label,' not aligned to its natural boundary (',`natural,')',13,10
+						end repeat
 					else if alignment > maxalignment
 						maxalignment = alignment
 					end if
 				end if
 			end match
 		end while
+		if sizeof name mod maxalignment > 0
+			repeat 1, size: sizeof name, natural: maxalignment
+				display 'warning: size of ',`name,' (',`size,') not aligned to its natural boundary (',`natural,')',13,10
+			end repeat
+		end if
 		name.__alignment := maxalignment
 	end if
 end macro
