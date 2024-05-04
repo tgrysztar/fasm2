@@ -31,12 +31,15 @@ repeat 3
 end repeat
 
 macro ? line&
-	match name: associations, line
+	local proxy
+	define proxy line
+	match name: associations, proxy
 		c1 calminstruction x86.use.name?
 		c2 calminstruction x86.require.name?
 		c3 calminstruction x86.requireexact.name?
 		iterate association, associations
-			match item operator value, association
+			define proxy association
+			match item operator value, proxy
 				if ~ defined x86.item
 					restore x86.item
 					x86.item = 0
@@ -212,10 +215,10 @@ end macro
 
 	; Enable or disable automatic RIP-relative addressing in long mode.
 
-	ripauto: rip = 0
-	rip: rip = 1
-	norip: rip = -1
-	absolute: rip = -1
+	ripauto: userip = 0
+	rip: userip = 1
+	norip: userip = -1
+	absolute: userip = -1
 
 purge ?, c1, c2, c3
 
@@ -590,7 +593,7 @@ iterate context, @dest,@src,@src2,@aux
 
 		      direct_address_in_long_mode:
 			compute displacement_size, 4
-			check	(x86.rip = 0 & mode = 0 & segment_prefix < 64h) | x86.rip = 1
+			check	(x86.userip = 0 & mode = 0 & segment_prefix < 64h) | x86.userip = 1
 			jyes	auto_relative_address
 			check	mode = 16
 			jyes	invalid_address_size
