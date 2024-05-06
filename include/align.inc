@@ -54,7 +54,7 @@ calminstruction align?.assume? address*, alignment*
 end calminstruction
 
 calminstruction align? alignment*, filler:rb #
-	local index, address, offset
+	local index, address, offset, symbol
 	compute offset, 0
 	match alignment | offset, alignment
 	compute alignment, alignment
