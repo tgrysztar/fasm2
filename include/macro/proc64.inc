@@ -172,6 +172,7 @@ macro fastcall?: proc*,args&
 					else if @src.size = 1
 						redefine target fastcall.rb#%
 						if @src.type <> 'reg' | ~ @src.imm eq fastcall.rb#%
+							mov fastcall.rb#%,value
 						end if
 					else
 						err 'invalid argument ',`arg
