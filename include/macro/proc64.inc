@@ -58,7 +58,6 @@ macro fastcall?.inline_string var
 	continue:
 end macro
 
-
 macro fastcall?: proc*,args&
 	local offset,framesize,type,value
 	if framesize & fastcall?.frame < 0
@@ -155,23 +154,20 @@ macro fastcall?: proc*,args&
 						value equ [rsp+8*(%-1)]
 					end if
 					if @src.size = 8 | ~ @src.size
-						redefine target fastcall.r#%
 						if @src.type <> 'reg' | ~ @src.imm eq fastcall.r#%
 							mov fastcall.r#%,value
 						end if
 					else if @src.size = 4
-						redefine target fastcall.rd#%
 						if @src.type <> 'reg' | ~ @src.imm eq fastcall.rd#%
 							mov fastcall.rd#%,value
 						end if
 					else if @src.size = 2
-						redefine target fastcall.r#%
 						if @src.type <> 'reg' | ~ @src.imm eq fastcall.rw#%
 							mov fastcall.rw#%,value
 						end if
 					else if @src.size = 1
-						redefine target fastcall.rb#%
 						if @src.type <> 'reg' | ~ @src.imm eq fastcall.rb#%
+							mov fastcall.rb#%,value
 						end if
 					else
 						err 'invalid argument ',`arg
