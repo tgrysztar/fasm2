@@ -1945,6 +1945,7 @@ calminstruction x86.push_instruction size:0,src*
     main:
 	check	(x86.mode <> 16 & size = 2) | (x86.mode = 16 & size = 4)
 	jno	prefix_ready
+	call	x86.require.80386
 	compute @src.prefix, 66h
       prefix_ready:
 
@@ -2068,6 +2069,7 @@ calminstruction x86.pop_instruction size:0,dest*
     main:
 	check	(x86.mode <> 16 & size = 2) | (x86.mode = 16 & size = 4)
 	jno	prefix_ready
+	call	x86.require.80386
 	compute @dest.prefix, 66h
       prefix_ready:
 
