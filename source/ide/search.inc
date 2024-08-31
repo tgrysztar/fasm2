@@ -522,7 +522,7 @@ release_search_data:
 	mov	edi,[search_data]
 	test	edi,edi
 	jz	search_data_released
-	mov	eax,[search_handle]
+	mov	ebx,[search_handle]
 	call	release_memory
 	mov	[search_data],0
     search_data_released:
