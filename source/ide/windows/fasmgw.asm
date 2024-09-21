@@ -2930,8 +2930,8 @@ proc CompilerSetup hwnd_dlg,msg,wparam,lparam
 	invoke	SetDlgItemText,[hwnd_dlg],ID_SOURCEHEADER,source_header
 	invoke	GetDlgItem,[hwnd_dlg],ID_PRIORITY
 	stdcall AddStrings,eax,_priority_settings
-	invoke	SetDlgItemInt,[hwnd_dlg],ID_PASSES,[maximum_number_of_passes]
-	invoke	SetDlgItemInt,[hwnd_dlg],ID_RECURSION,[maximum_depth_of_stack]
+	invoke	SetDlgItemInt,[hwnd_dlg],ID_PASSES,[maximum_number_of_passes],FALSE
+	invoke	SetDlgItemInt,[hwnd_dlg],ID_RECURSION,[maximum_depth_of_stack],FALSE
 	mov	eax,[compiler_priority]
 	cmp	eax,2
 	jg	.realtime
