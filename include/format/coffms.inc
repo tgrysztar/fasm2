@@ -371,6 +371,8 @@ macro section? declaration*
 					SECTION_FLAGS = SECTION_FLAGS or IMAGE_SCN_CNT_CODE
 				else match =data?, attribute
 					SECTION_FLAGS = SECTION_FLAGS or IMAGE_SCN_CNT_INITIALIZED_DATA
+				else match =udata?, attribute
+					SECTION_FLAGS = SECTION_FLAGS or IMAGE_SCN_CNT_UNINITIALIZED_DATA
 				else match =readable?, attribute
 					SECTION_FLAGS = SECTION_FLAGS or IMAGE_SCN_MEM_READ
 				else match =writeable?, attribute
