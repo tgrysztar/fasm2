@@ -1,4 +1,6 @@
 
+use AMD64, XSAVE, AVX512F
+
 format PE64 NX GUI 5.0
 entry start
 
@@ -36,22 +38,23 @@ section '.text' code readable executable
 	test	ebx,1 shl 16
 	jz	no_AVX512
 
-	vbroadcastsd	zmm0, [x]
-	vmovapd 	zmm1, zmm0
+		vbroadcastsd	zmm0, [x]
+		vmovapd 	zmm1, zmm0
 
-	mov		al, 10011111b
-	kmovb		k1, eax
-	vsqrtpd 	zmm1{k1}, zmm1
+		mov		al, 10011111b
+		kmovw		k1, eax
+;   {AVX512DQ}	kmovb		k1, eax
+		vsqrtpd 	zmm1{k1}, zmm1
 
-	vsubpd		ymm2, ymm0, ymm1
-	vsubpd		xmm3, xmm1, xmm2
-	vaddpd		ymm4, ymm2, ymm3
-	vaddpd		zmm5, zmm1, zmm4
+		vsubpd		ymm2, ymm0, ymm1
+		vsubpd		xmm3, xmm1, xmm2
+		vaddpd		ymm4, ymm2, ymm3
+		vaddpd		zmm5, zmm1, zmm4
 
-	vcmpeqpd	k6, zmm5, zmm0
-	kshiftlq	k6, k6, 1
-	vmulpd		zmm6{k6}, zmm0, zmm1
-	vgetexppd	zmm7{k6}, zmm6
+		vcmpeqpd	k6, zmm5, zmm0
+    {AVX512BW}	kshiftlq	k6, k6, 1
+		vmulpd		zmm6{k6}, zmm0, zmm1
+		vgetexppd	zmm7{k6}, zmm6
 
 	sub	rsp,818h
 
