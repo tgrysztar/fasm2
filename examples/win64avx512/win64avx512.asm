@@ -13,7 +13,7 @@ section '.data' data readable writeable
 
   vector_output:
     repeat 32, i:0
-	db 'ZMM',`i,': %f, %f, %f, %f, %f, %f, %f, %f',10
+	db 'ZMM',`i,':',9,'%f, %f, %f, %f, %f, %f, %f, %f',10
     end repeat
     db 0
 
@@ -62,7 +62,7 @@ section '.text' code readable executable
 		vmulpd		zmm6{k6}, zmm0, zmm1
 		vgetexppd	zmm7{k6}, zmm6
 
-	sub	rsp,1018h
+	sub	rsp,818h
 
     repeat 32, i:0
 	vmovups [rsp+10h+i*64],zmm#i
