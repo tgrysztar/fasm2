@@ -60,6 +60,7 @@ EVEX_AS_VEX = 0
 EVEX_W1 = 1 shl 15
 EVEX_REQUIRED = 1 shl 10
 EVEX_FORBIDDEN = 1 shl 2
+EVEX_FORBIDDEN_VL = 1 shl 1
 EVEX_VL = 1 shl 22
 EVEX_VL_AVX2 = 1 shl 32
 EVEX_BW = 1 shl 23
@@ -556,7 +557,7 @@ iterate context, @dest,@src,@src2,@aux
 			jyes	evex_L'
 			check	evex_flags and EVEX_VL & x86.ext and x86.AVX512VL.ext = 0
 			jno	evex_L
-			compute evex_flags, evex_flags or EVEX_FORBIDDEN
+			compute evex_flags, evex_flags or EVEX_FORBIDDEN_VL
 		    evex_L:
 			check	vsize = 32
 			jno	evex_mask
@@ -638,12 +639,17 @@ iterate context, @dest,@src,@src2,@aux
 		    choose_prefix:
 			check	evex_flags and EVEX_REQUIRED | evex and 11011111_00000000_00010000b | rm and 10000b
 			jyes	evex_required
-			check	~ evex_flags and EVEX_FORBIDDEN & evex_displacement_size + 1 < displacement_size
+			check	~ evex_flags and (EVEX_FORBIDDEN or EVEX_FORBIDDEN_VL) & evex_displacement_size + 1 < displacement_size
 			jyes	evex
 			jump	vex
 		    evex_required:
-			check	evex_flags and EVEX_FORBIDDEN
+			check	evex_flags and (EVEX_FORBIDDEN or EVEX_FORBIDDEN_VL)
 			jno	evex
+			check	evex_flags and EVEX_FORBIDDEN
+			jyes	evex_forbidden
+			call	x86.require.AVX512VL
+			jump	evex
+		    evex_forbidden:
 			err	'invalid operand'
 
 		    vex:

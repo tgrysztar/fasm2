@@ -12,8 +12,8 @@ section '.data' data readable writeable
   x dq 3.14159265389
 
   vector_output:
-    repeat 16, i:0
-	db 'ZMM',`i,': %f, %f, %f, %f, %f, %f, %f, %f',10,10
+    repeat 32, i:0
+	db 'ZMM',`i,': %f, %f, %f, %f, %f, %f, %f, %f',10
     end repeat
     db 0
 
@@ -21,7 +21,7 @@ section '.data' data readable writeable
 
 section '.text' code readable executable
 
-  start:
+    start:
 
 	mov	eax,1
 	cpuid
@@ -50,15 +50,21 @@ section '.text' code readable executable
 		vsubpd		xmm3, xmm1, xmm2
 		vaddpd		ymm4, ymm2, ymm3
 		vaddpd		zmm5, zmm1, zmm4
-
 		vcmpeqpd	k6, zmm5, zmm0
+
+	test	ebx,1 shl 30
+	jz	no_AVX512BW
+
     {AVX512BW}	kshiftlq	k6, k6, 1
+
+    no_AVX512BW:
+
 		vmulpd		zmm6{k6}, zmm0, zmm1
 		vgetexppd	zmm7{k6}, zmm6
 
-	sub	rsp,818h
+	sub	rsp,1018h
 
-    repeat 16, i:0
+    repeat 32, i:0
 	vmovups [rsp+10h+i*64],zmm#i
     end repeat
 
@@ -77,7 +83,7 @@ section '.text' code readable executable
 	xor	ecx,ecx
 	call	[ExitProcess]
 
-  no_AVX512:
+    no_AVX512:
 
 	sub	rsp,28h
 
