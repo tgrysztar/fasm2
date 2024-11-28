@@ -98,28 +98,6 @@ section '.text' code readable executable
 
 section '.idata' import data readable writeable
 
-  dd 0,0,0,RVA kernel_name,RVA kernel_table
-  dd 0,0,0,RVA user_name,RVA user_table
-  dd 0,0,0,RVA msvcrt_name,RVA msvcrt_table
-  dd 0,0,0,0,0
+    include 'imports.inc'
 
-  kernel_table:
-    ExitProcess dq RVA _ExitProcess
-    dq 0
-  user_table:
-    MessageBoxA dq RVA _MessageBoxA
-    dq 0
-  msvcrt_table:
-    sprintf dq RVA _sprintf
-    dq 0
-
-  kernel_name db 'KERNEL32.DLL',0
-  user_name db 'USER32.DLL',0
-  msvcrt_name db 'MSVCRT.DLL',0
-
-  _ExitProcess dw 0
-    db 'ExitProcess',0
-  _MessageBoxA dw 0
-    db 'MessageBoxA',0
-  _sprintf dw 0
-    db 'sprintf',0
+    imports KERNEL32.DLL, ExitProcess, USER32.DLL, MessageBoxA, MSVCRT.DLL, sprintf
