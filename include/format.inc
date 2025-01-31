@@ -206,6 +206,7 @@ macro format?.ELF? variant
 		__include 'format/elf32.inc'
 		use32
 	else match =executable? settings, variant:
+		format executable
 		match brand =at? base:, settings
 			ELF.Settings.ABI = brand
 			ELF.Settings.BaseAddress = base
@@ -241,6 +242,7 @@ macro format?.ELF64? variant
 		__include 'format/elf64.inc'
 		use64
 	else match =executable? settings, variant:
+		format executable
 		ELF.Settings.Class = ELFCLASS64
 		ELF.Settings.Machine = EM_X86_64
 		ELF.Settings.BaseAddress = 400000h
