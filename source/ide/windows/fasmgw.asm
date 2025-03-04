@@ -12,6 +12,9 @@ include 'fedit.ash'
 
 include '..\..\version.inc'
 
+PE.Settings.Stamp = +VERSION
+%t equ +VERSION
+
 struct EDITITEM
   header      TC_ITEMHEADER
   hwnd	      dd ?
