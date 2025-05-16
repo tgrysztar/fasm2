@@ -2015,6 +2015,7 @@ end iterate
 
 iterate <instr,vex_mpw,evex_f,opcode_rm,opcode_mr>, vmovapd,VEX_66_0F_W0,EVEX_W1+EVEX_VL,28h,29h, vmovaps,VEX_0F_W0,EVEX_AS_VEX+EVEX_VL,28h,29h, \
 						    vmovupd,VEX_66_0F_W0,EVEX_W1+EVEX_VL,10h,11h, vmovups,VEX_0F_W0,EVEX_AS_VEX+EVEX_VL,10h,11h, \
+						    vmovdqa,VEX_66_0F_W0,EVEX_FORBIDDEN,6Fh,7Fh, vmovdqu,VEX_F3_0F_W0,EVEX_FORBIDDEN,6Fh,7Fh, \
 						    vmovdqa32,VEX_66_0F_W0,EVEX_REQUIRED+EVEX_VL,6Fh,7Fh, vmovdqa64,VEX_66_0F_W1,EVEX_REQUIRED+EVEX_VL,6Fh,7Fh, \
 						    vmovdqu32,VEX_F3_0F_W0,EVEX_REQUIRED+EVEX_VL,6Fh,7Fh, vmovdqu64,VEX_F3_0F_W1,EVEX_REQUIRED+EVEX_VL,6Fh,7Fh
 
