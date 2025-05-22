@@ -1,10 +1,11 @@
 
 % = 0
 
-calminstruction times?: statement
+calminstruction times?: statement&
 	local	number, instruction, limit
-	match	number= statement, statement, ()
+	match	number.expression statement, statement, .
 	jno	incomplete_statement
+	match	:statement, statement
 	take	limit, number
 	compute limit, limit
 	take	instruction, statement
