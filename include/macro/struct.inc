@@ -360,7 +360,7 @@ macro ends?
 			local ic, iname
 			init ic
 			compute ic, ic + 1
-			arrange iname, sname#ic
+			arrange iname, .sname#ic
 			call struct?.instantiate, iname, sname, values
 		end calminstruction
 

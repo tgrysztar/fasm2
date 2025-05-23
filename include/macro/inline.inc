@@ -61,11 +61,12 @@ macro inlinemacro?.enable? chain
 	    preprocess:
 		match	head? =__inline__.name tail?, text
 		jno	ready
-		match	(arguments?) tail?, tail, ()
+		match	arguments tail?, tail, ()
 		jyes	inline
 		arrange text, head name tail
 		jump	preprocess
 	    inline:
+		match	(arguments?), arguments
 		match	?, name
 		jyes	special
 		local	tmp, return
