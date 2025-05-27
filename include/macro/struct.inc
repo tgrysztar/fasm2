@@ -414,7 +414,8 @@ end macro
 calminstruction breakifndef? sym
 	transform sym
 	jyes ok
-	asm break
+	arrange sym, =break
+	assemble sym
     ok:
 end calminstruction
 
