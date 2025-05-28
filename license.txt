@@ -1,6 +1,6 @@
 flat assembler 2
 flat assembler g
-Copyright (c) 1999-2024, Tomasz Grysztar
+Copyright (c) 1999-2025, Tomasz Grysztar
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without

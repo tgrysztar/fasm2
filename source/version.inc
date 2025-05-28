@@ -1,1 +1,1 @@
-VERSION equ "kp60"
+VERSION equ "ktge"

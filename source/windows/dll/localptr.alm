@@ -1,10 +1,8 @@
 
 calminstruction push? arg*&
-	local	tmp, more
-	match	=dword? arg, arg
+	local	tmp
+	match	=dword? arg.expression, arg, .
 	jno	regular
-	match	tmp], arg
-	jyes	regular
 	check	arg relativeto ebp & arg - ebp
 	jno	regular
 	arrange tmp, =push =eax
@@ -21,8 +19,8 @@ end calminstruction
 
 calminstruction mov? dest*,src*
 	local	tmp
-	match	tmp], src
-	jyes	regular
+	match	src.expression, src, .
+	jno	regular
 	check	src relativeto ebp & src - ebp
 	jno	regular
 	arrange tmp, =lea dest,[src]
