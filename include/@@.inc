@@ -38,3 +38,5 @@ end macro
 repeat 10, i:0
 	@INIT @#i,@#i
 end repeat
+
+purge @INIT
