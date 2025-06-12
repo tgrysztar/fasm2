@@ -378,9 +378,20 @@ macro proc? statement&
 			locals
 				iterate arg, args
 					match varname[count]:type, arg
-						?varname dbx type:count dup ?
+						match :size, x86.type
+							?varname dbx size:count dup ?
+						else
+							?varname type
+							repeat count - 1
+								type
+							end repeat
+						end match
 					else match varname:type, arg
-						?varname dbx type, ?
+						match :size, x86.type
+							?varname dbx size, ?
+						else
+							?varname type
+						end match
 					else match varname[count], arg
 						?varname rd count
 					else match varname type, arg
