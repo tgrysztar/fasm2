@@ -15,10 +15,6 @@ iterate context, @dest,@src,@src2,@aux
 
 			call	x86.parse_operand#context, operand
 
-			compute mask, 0
-			compute evex_b, 0
-			compute memsize, 0
-
 			check	type = 'imm' & size = 0
 			jno	ready
 
@@ -75,7 +71,7 @@ iterate <instr,vex_mpw>, ldtilecfg,VEX_0F38_W0, sttilecfg,VEX_66_0F38_W0
 			if @src.size and not 512
 				err 'invalid operand size'
 			end if
-			AVX_512.store_instruction@src 16,vex_mpw,EVEX_FORBIDDEN,49h,0,0
+			AVX.store_instruction@src 16,vex_mpw,49h,0
 		else
 			err 'invalid operand'
 		end if
@@ -90,7 +86,7 @@ iterate <instr,vex_mpw>, tileloadd,VEX_F2_0F38_W0, tileloaddt1,VEX_66_0F38_W0
 		AMX.parse_operand@dest dest
 		AMX.parse_sib_operand@src src
 		if @dest.type = 'tmmreg' & @src.type = 'mem'
-			AVX_512.store_instruction@src 16,vex_mpw,EVEX_FORBIDDEN,4Bh,0,@dest.rm
+			AVX.store_instruction@src 16,vex_mpw,4Bh,@dest.rm
 		else
 			err 'invalid operand'
 		end if
@@ -108,7 +104,7 @@ macro tilestored? dest*,src*&
 		AMX.parse_operand@src src
 	end match
 	if @dest.type = 'mem' & @src.type = 'tmmreg'
-		AVX_512.store_instruction@dest 16,VEX_F3_0F38_W0,EVEX_FORBIDDEN,4Bh,0,@src.rm
+		AVX.store_instruction@dest 16,VEX_F3_0F38_W0,4Bh,@src.rm
 	else
 		err 'invalid operand'
 	end if
@@ -118,9 +114,8 @@ macro tilezero? dest*
 	require AMX_TILE
 	AMX.parse_operand@dest dest
 	if @dest.type = 'tmmreg'
-		@src.type = 'reg'
-		@src.rm = 0
-		AVX_512.store_instruction@src 16,VEX_F2_0F38_W0,EVEX_FORBIDDEN,49h,0,@dest.rm
+		x86.parse_operand@src al
+		AVX.store_instruction@src 16,VEX_F2_0F38_W0,49h,@dest.rm
 	else
 		err 'invalid operand'
 	end if
@@ -128,9 +123,8 @@ end macro
 
 macro tilerelease?
 	require AMX_TILE
-	@src.type = 'reg'
-	@src.rm = 0
-	AVX_512.store_instruction@src 16,VEX_0F38_W0,EVEX_FORBIDDEN,49h,0,0
+	x86.parse_operand@src al
+	AVX.store_instruction@src 16,VEX_0F38_W0,49h,0
 end macro
 
 iterate <instr,vex_mpw>, tdpbssd,VEX_F2_0F38_W0, tdpbsud,VEX_F3_0F38_W0, tdpbusd,VEX_66_0F38_W0, tdpbuud,VEX_0F38_W0
@@ -141,7 +135,7 @@ iterate <instr,vex_mpw>, tdpbssd,VEX_F2_0F38_W0, tdpbsud,VEX_F3_0F38_W0, tdpbusd
 		AMX.parse_operand@src src
 		AMX.parse_operand@src2 src2
 		if @dest.type = 'tmmreg' & @src.type = 'tmmreg' & @src2.type = 'tmmreg'
-			AVX_512.store_instruction@src 16,vex_mpw,EVEX_FORBIDDEN,5Eh,0,@dest.rm,@src2.rm
+			AVX.store_instruction@src 16,vex_mpw,5Eh,@dest.rm,@src2.rm
 		else
 			err 'invalid operand'
 		end if
@@ -155,7 +149,7 @@ macro tdpbf16ps? dest*,src*,src2*
 	AMX.parse_operand@src src
 	AMX.parse_operand@src2 src2
 	if @dest.type = 'tmmreg' & @src.type = 'tmmreg' & @src2.type = 'tmmreg'
-		AVX_512.store_instruction@src 16,VEX_F3_0F38_W0,EVEX_FORBIDDEN,5Ch,0,@dest.rm,@src2.rm
+		AVX.store_instruction@src 16,VEX_F3_0F38_W0,5Ch,@dest.rm,@src2.rm
 	else
 		err 'invalid operand'
 	end if
