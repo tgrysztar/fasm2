@@ -68,7 +68,7 @@ iterate <instr,vex_mpw>, ldtilecfg,VEX_0F38_W0, sttilecfg,VEX_66_0F38_W0
 		require AMX_TILE
 		AMX.parse_operand@src src
 		if @src.type = 'mem'
-			if @src.size and not 512
+			if @src.size and not 64
 				err 'invalid operand size'
 			end if
 			AVX.store_instruction@src 16,vex_mpw,49h,0
