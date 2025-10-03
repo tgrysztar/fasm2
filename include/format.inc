@@ -2,6 +2,10 @@
 define format? format.extension
 
 calminstruction format? statement*
+	check $% = 0
+	jyes parse
+	err 'FORMAT statement must be placed before any data output'
+    parse:
 	local ext
 	match statement =as? ext, statement
 	jno pass

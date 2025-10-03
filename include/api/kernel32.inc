@@ -324,6 +324,7 @@ import kernel32,\
        GetSystemDefaultLangID,'GetSystemDefaultLangID',\
        GetSystemDirectoryA,'GetSystemDirectoryA',\
        GetSystemDirectoryW,'GetSystemDirectoryW',\
+       GetSystemFirmwareTable,'GetSystemFirmwareTable',\
        GetSystemInfo,'GetSystemInfo',\
        GetSystemPowerStatus,'GetSystemPowerStatus',\
        GetSystemTime,'GetSystemTime',\
@@ -371,6 +372,7 @@ import kernel32,\
        GlobalHandle,'GlobalHandle',\
        GlobalLock,'GlobalLock',\
        GlobalMemoryStatus,'GlobalMemoryStatus',\
+       GlobalMemoryStatusEx,'GlobalMemoryStatusEx',\
        GlobalMemoryStatusVlm,'GlobalMemoryStatusVlm',\
        GlobalReAlloc,'GlobalReAlloc',\
        GlobalSize,'GlobalSize',\
