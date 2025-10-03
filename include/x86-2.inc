@@ -7,7 +7,6 @@ define MMX MMX
 define SSE SSE
 define AVX AVX
 define AVX_512 AVX_512
-define MPX MPX
 
 include 'xcalm.inc'
 
@@ -174,6 +173,9 @@ end macro
 	MOVDIR64B: ext | 64 + 28
 	AVX512_4VNNIW: ext | 96 + 2
 	CET_IBT: ext | 96 + 20
+	AMX_BF16: ext | 96 + 22
+	AMX_TILE: ext | 96 + 24
+	AMX_INT8: ext | 96 + 25
 
 	3DNow: ext | 128 + 31
 
@@ -221,6 +223,11 @@ end macro
 	rip: userip = 1
 	norip: userip = -1
 	absolute: userip = -1
+
+	; Enable or disable SIB addressing enforcement
+
+	sibauto: usesib = 0
+	sib: usesib = 1
 
 purge ?, c1, c2, c3
 
@@ -723,7 +730,7 @@ iterate context, @dest,@src,@src2,@aux
 			jyes	one_register_split
 			jump	invalid_address
 		      one_register_unscaled:
-			check	base and 111b = 4
+			check	base and 111b = 4 | x86.usesib
 			jyes	one_register_unscaled_in_sib
 			compute rm, base
 			jump	setup_displacement
@@ -4168,3 +4175,5 @@ include 'iset/gfni.inc'
 include 'iset/pclmulqdq.inc'
 
 include 'iset/3dnow.inc'
+
+include 'iset/amx.inc'

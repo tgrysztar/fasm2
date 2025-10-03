@@ -3982,7 +3982,7 @@ end macro
 iterate <instr,postbyte>, vldmxcsr,2, vstmxcsr,3
 
 	macro instr? src*
-		x86.parse_operand@src src
+		AVX_512.parse_operand@src src
 		if @src.type = 'mem'
 			if @src.size and not 4
 				err 'invalid operand size'
