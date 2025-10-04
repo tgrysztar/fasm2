@@ -38,8 +38,7 @@ iterate name,\
 	glUseProgram,\
 	glGetUniformLocation,\
 	glUniform1f,\
-	glUniform3f,\
-	glDrawArrays
+	glUniform3f
 
 	define CONTEXT_AWARE_FUNCTION name
 
@@ -93,9 +92,12 @@ section '.data' data readable writeable
 
 section '.text' code readable executable
 
-  start:
-	sub	rsp,8
+  ; setting fastcall.frame to non-negative value makes fastcall/invoke use it to track maximum necessary
+  ; stack space, and not allocate it automatically
+  fastcall.frame = 0
 
+  start:
+	sub	rsp,8+MAIN_FRAME
 	invoke	GetModuleHandle,0
 	mov	[wc.hInstance],rax
 	invoke	LoadIcon,0,IDI_APPLICATION
@@ -117,9 +119,11 @@ section '.text' code readable executable
   end_loop:
 	invoke	ExitProcess,[msg.wParam]
 
+  MAIN_FRAME := fastcall.frame
+
 proc WindowProc uses rbx rsi rdi, hwnd,wmsg,wparam,lparam
-	mov	[hwnd],rcx
 	frame
+	mov	[hwnd],rcx
 	cmp	edx,WM_CREATE
 	je	wmcreate
 	cmp	edx,WM_SIZE
@@ -273,7 +277,6 @@ proc WindowProc uses rbx rsi rdi, hwnd,wmsg,wparam,lparam
 	invoke	PostQuitMessage,0
 	xor	eax,eax
   finish:
-	endf
 	ret
   function_not_supported:
 	invoke	MessageBox,[hwnd],_function_not_supported,rbx,MB_ICONERROR+MB_OK
@@ -281,6 +284,7 @@ proc WindowProc uses rbx rsi rdi, hwnd,wmsg,wparam,lparam
   context_not_created:
 	invoke	MessageBox,[hwnd],_context_not_created,NULL,MB_ICONERROR+MB_OK
 	jmp	exit
+	endf
 endp
 
 section '.rdata' data readable
@@ -344,6 +348,7 @@ section '.rdata' data readable
 	 glClear,'glClear',\
 	 glClearColor,'glClearColor',\
 	 glViewport,'glViewport',\
+	 glDrawArrays,'glDrawArrays',\
 	 wglGetProcAddress,'wglGetProcAddress',\
 	 wglCreateContext,'wglCreateContext',\
 	 wglDeleteContext,'wglDeleteContext',\
