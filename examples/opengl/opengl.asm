@@ -38,6 +38,7 @@ iterate name,\
 	glUseProgram,\
 	glGetUniformLocation,\
 	glUniform1f,\
+	glUniform3f,\
 	glDrawArrays
 
 	define CONTEXT_AWARE_FUNCTION name
@@ -88,6 +89,7 @@ section '.data' data readable writeable
   vbo dd ?
 
   uTimeLoc dd ?
+  uResolutionLoc dd ?
 
 section '.text' code readable executable
 
@@ -177,9 +179,6 @@ proc WindowProc uses rbx rsi rdi, hwnd,wmsg,wparam,lparam
 	mov	[name],rax
   end irpv
 
-	invoke	GetClientRect,[hwnd],addr rc
-	invoke	glViewport,0,0,[rc.right],[rc.bottom]
-
 	invoke	glCreateShader,GL_VERTEX_SHADER
 	mov	[vs_id],eax
 	invoke	glShaderSource,[vs_id],1,addr p_vs_src,0
@@ -203,8 +202,10 @@ proc WindowProc uses rbx rsi rdi, hwnd,wmsg,wparam,lparam
 
 	invoke	glUseProgram,[program]
 
-	invoke	glGetUniformLocation,[program],'uTime'
+	invoke	glGetUniformLocation,[program],uTime
 	mov	[uTimeLoc],eax
+	invoke	glGetUniformLocation,[program],uResolution
+	mov	[uResolutionLoc],eax
 
 	invoke	glGenVertexArrays,1,addr vao
 	invoke	glBindVertexArray,[vao]
@@ -232,11 +233,13 @@ proc WindowProc uses rbx rsi rdi, hwnd,wmsg,wparam,lparam
 			8		; offset(bytes), skip vec2
 	invoke	glEnableVertexAttribArray,1
 
-	xor	eax,eax
-	jmp	finish
+
   wmsize:
 	invoke	GetClientRect,[hwnd],addr rc
 	invoke	glViewport,0,0,[rc.right],[rc.bottom]
+	cvtsi2ss xmm1,[rc.right]
+	cvtsi2ss xmm2,[rc.bottom]
+	invoke	glUniform3f,[uResolutionLoc],float xmm1,float xmm2,float 1f
 	xor	eax,eax
 	jmp	finish
   wmpaint:
@@ -299,6 +302,9 @@ section '.rdata' data readable
 
   fs_src file 'fragment.glsl'
 	 db 0
+
+  uTime db 'iTime',0
+  uResolution db 'iResolution',0
 
   align 8
 
