@@ -105,7 +105,7 @@ section '.text' code readable executable
 	invoke	LoadCursor,0,IDC_ARROW
 	mov	[wc.hCursor],rax
 	invoke	RegisterClass,wc
-	invoke	CreateWindowEx,0,_class,_title,WS_VISIBLE+WS_OVERLAPPEDWINDOW+WS_CLIPCHILDREN+WS_CLIPSIBLINGS,16,16,432,432,NULL,NULL,[wc.hInstance],NULL
+	invoke	CreateWindowEx,0,_class,_title,WS_VISIBLE+WS_OVERLAPPEDWINDOW+WS_CLIPCHILDREN+WS_CLIPSIBLINGS,48,48,432,432,NULL,NULL,[wc.hInstance],NULL
 
   msg_loop:
 	invoke	GetMessage,addr msg,NULL,0,0
@@ -252,10 +252,11 @@ proc WindowProc uses rbx rsi rdi, hwnd,wmsg,wparam,lparam
 	cmp	rcx,10		; wait at least 10ms before drawing again
 	jb	finish
 	mov	[clock],rax
-
+	and	eax,0FFFFFh
 	cvtsi2ss xmm1,rax
 	divss	xmm1,[thousand]
 	invoke	glUniform1f,[uTimeLoc],float xmm1
+
 
 	invoke	glClearColor,float dword 0.02,float dword 0.02,float dword 0.04,float dword 1.0
 	invoke	glClear,GL_COLOR_BUFFER_BIT
