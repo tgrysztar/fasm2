@@ -237,7 +237,6 @@ proc WindowProc uses rbx rsi rdi, hwnd,wmsg,wparam,lparam
 			8		; offset(bytes), skip vec2
 	invoke	glEnableVertexAttribArray,1
 
-
   wmsize:
 	invoke	GetClientRect,[hwnd],addr rc
 	invoke	glViewport,0,0,[rc.right],[rc.bottom]

@@ -132,14 +132,18 @@ macro fastcall?: proc*,args&
 						mov rax,value
 						movq fastcall.rf#%,rax
 					else
-						movq fastcall.rf#%,value
+						if @src.type <> 'mmreg' | ~ @src.imm eq fastcall.rf#%
+							movq fastcall.rf#%,value
+						end if
 					end if
 				else if @src.size = 4
 					if @src.type = 'imm'
 						mov eax,value
 						movd fastcall.rf#%,eax
 					else
-						movd fastcall.rf#%,value
+						if @src.type <> 'mmreg' | ~ @src.imm eq fastcall.rf#%
+							movd fastcall.rf#%,value
+						end if
 					end if
 				else
 					err 'invalid argument ',`arg
