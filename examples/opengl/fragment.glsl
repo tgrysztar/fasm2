@@ -4,7 +4,7 @@ out vec4 fragColor;
 uniform float iTime;
 uniform vec3 iResolution;
 void mainImage(out vec4 o,vec2 i);
-void main() { mainImage(fragColor,vCol.xz*iResolution.xy); }
+void main() { mainImage(fragColor,vCol.rb*iResolution.xy); }
 
 // Heptamer by holtsetio
 // https://www.shadertoy.com/view/3fXyRf

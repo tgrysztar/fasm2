@@ -54,10 +54,10 @@ section '.data' data readable writeable
 	dd 0
 
   vertices:
-	dd  0.6, 0.6,		0.1, 0.1, 1.0
-	dd  -0.6, 0.6,		1.0, 0.1, 1.0
-	dd  0.6, -0.6,		0.1, 0.1, 0.1
-	dd  -0.6, -0.6, 	1.0, 0.1, 0.1
+	dd  0.6, 0.6,		0f, 0f, 1f
+	dd  -0.6, 0.6,		1f, 0f, 1f
+	dd  0.6, -0.6,		0f, 0f, 0f
+	dd  -0.6, -0.6, 	1f, 0f, 0f
 
   thousand dd 1000.0
 
@@ -256,7 +256,6 @@ proc WindowProc uses rbx rsi rdi, hwnd,wmsg,wparam,lparam
 	cvtsi2ss xmm1,rax
 	divss	xmm1,[thousand]
 	invoke	glUniform1f,[uTimeLoc],float xmm1
-
 
 	invoke	glClearColor,float dword 0.02,float dword 0.02,float dword 0.04,float dword 1.0
 	invoke	glClear,GL_COLOR_BUFFER_BIT
