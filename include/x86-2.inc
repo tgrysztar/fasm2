@@ -1831,8 +1831,6 @@ calminstruction imul? dest*,src&
 	match	, src
 	jyes	imul_rm
 
-	call	x86.require.80186
-
 	local	src1, src2
 
 	match	src1 =, src2, src
@@ -1910,11 +1908,13 @@ calminstruction imul? dest*,src&
 	exit
 
     imul_reg_rm:
+	call	x86.require.80386
 	call	x86.select_operand_prefix@src, size
 	xcall	x86.store_instruction@src, <0Fh,0AFh>,@dest.rm
 	exit
 
     imul_reg_rm_imm:
+	call	x86.require.80186
 	call	x86.select_operand_prefix@src, size
 	check	@aux.imm eqtype 0.0
 	jno	imul_reg_rm_imm_optimize

@@ -93,7 +93,7 @@ section '.data' data readable writeable
 section '.text' code readable executable
 
   ; setting fastcall.frame to non-negative value makes fastcall/invoke use it to track maximum necessary
-  ; stack space, and not allocate it automatically
+  ; stack space (aligned to a multiple of 16 bytes), and not allocate it automatically
   fastcall.frame = 0
 
   start:
