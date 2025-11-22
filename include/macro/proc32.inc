@@ -206,7 +206,7 @@ end macro
 
 close@proc equ
 
-macro proc? statement&
+macro proc? &statement&
 
 	local _local,params,flag,regs,parmbytes,localbytes,current,tmp,initlocal
 
