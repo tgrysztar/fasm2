@@ -123,3 +123,11 @@ iterate <dw,word>, db,byte, dw,word, du,wchar, dd,dword, dp,pword, df,pword, dq,
 	end calminstruction
 
 end iterate
+
+macro rf? count*
+	rp count
+end macro
+
+struc (label) rf? count*
+	label rp count
+end struc

@@ -4115,16 +4115,6 @@ macro vzeroupper?
 	db 0C5h,11111000b,77h
 end macro
 
-macro xsaveopt? src*
-	require AVX+
-	x86.parse_operand@src src
-	if @src.type = 'mem'
-		x86.store_instruction@src <0Fh,0AEh>,6
-	else
-		err 'invalid operand'
-	end if
-end macro
-
 iterate <instr,vex_mpw,opcode>, vpbroadcastmb2q,VEX_F3_0F38_W1,2Ah, vpbroadcastmw2d,VEX_F3_0F38_W0,3Ah
 
 	macro instr? dest*,src*

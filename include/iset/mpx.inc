@@ -194,3 +194,8 @@ macro bndstx? operands*&
 		err 'invalid combination of operands'
 	end match
 end macro
+
+calminstruction bnd? instr&
+	emit	1, 0F2h
+	assemble instr
+end calminstruction
