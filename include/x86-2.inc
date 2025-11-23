@@ -253,6 +253,13 @@ end macro
 	sibauto: usesib = 0
 	sib: usesib = 1
 
+	; VEX size preference
+
+	vexauto: vexsize = 0
+	vex2: vexsize = 2
+	vex3: vexsize = 3
+	evex: vexsize = 4
+
 purge ?, c1, c2, c3
 
 ; To select a group of settings:

@@ -639,7 +639,7 @@ iterate context, @dest,@src,@src2,@aux
 		    choose_prefix:
 			check	evex_flags and EVEX_REQUIRED | evex and 11011111_00000000_00010000b | rm and 10000b
 			jyes	evex_required
-			check	~ evex_flags and (EVEX_FORBIDDEN or EVEX_FORBIDDEN_VL) & evex_displacement_size + 1 < displacement_size
+			check	~ evex_flags and (EVEX_FORBIDDEN or EVEX_FORBIDDEN_VL) & ( (evex_displacement_size + 1 < displacement_size & ~ x86.vexsize) | x86.vexsize = 4)
 			jyes	evex
 			jump	vex
 		    evex_required:
@@ -655,7 +655,7 @@ iterate context, @dest,@src,@src2,@aux
 		    vex:
 			call	x86.require.AVX
 			compute vex, evex and 11111011_11111111b or (evex and 1 shl 21) shr (21-10)
-			check	vex and 10000000_01111111b <> 1
+			check	vex and 10000000_01111111b <> 1 | x86.vexsize = 3
 			jyes	vex_3byte
 		    vex_2byte:
 			emit	1, 0C5h
