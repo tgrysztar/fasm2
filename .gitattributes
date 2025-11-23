@@ -1,0 +1,6 @@
+fasm2           eol=lf
+fasm2.cmd       eol=crlf
+fasmg.x64       -text
+fasmg.exe       -text
+fasmgw.exe      -text
+
