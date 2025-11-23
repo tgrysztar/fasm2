@@ -4271,7 +4271,7 @@ macro movdir64b? dest*,src*
 		if @src.size and not 64
 			err 'invalid operand size'
 		end if
-		if (@src.mode = 16 & @dest.size <> 2) | (@src.mode = 32 & @dest.size <> 4) | (@src.mode = 64 & @dest.size <> 8)
+		if @dest.size shl 3 <> @src.mode
 			err 'invalid operand size'
 		end if
 		@src.opcode_prefix = 66h
@@ -4324,7 +4324,7 @@ iterate <instr,pfx>, enqcmd,0F2h, enqcmds,0F3h
 			if @src.size and not 64
 				err 'invalid operand size'
 			end if
-			if (@src.mode < 64 & @dest.size <> 4) | (@src.mode = 64 & @dest.size <> 8)
+			if @dest.size shl 3 <> @src.mode
 				err 'invalid operand size'
 			end if
 			@src.opcode_prefix = pfx

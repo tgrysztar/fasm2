@@ -14,7 +14,8 @@ macro senduipi? src*
 	require bits64
 	x86.parse_operand@src src
 	if @src.type = 'reg' & @src.size = 8
-		x86.store_instruction@src <0F3h,0Fh,0C7h>,6
+		@src.opcode_prefix = 0F3h
+		x86.store_instruction@src <0Fh,0C7h>,6
 	else
 		err 'invalid operand'
 	end if
