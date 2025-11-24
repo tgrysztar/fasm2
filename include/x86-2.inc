@@ -180,6 +180,7 @@ end macro
 	AVX512_BITALG:		ext | 64 + 12
 	AVX512_VPOPCNTDQ:	ext | 64 + 14
 	RDPID:			ext | 64 + 22
+	KL:			ext | 64 + 23
 	CLDEMOTE:		ext | 64 + 25
 	MOVDIRI:		ext | 64 + 27
 	MOVDIR64B:		ext | 64 + 28
@@ -4391,6 +4392,7 @@ include 'iset/bmi.inc'
 
 include 'iset/sha.inc'
 include 'iset/aes.inc'
+include 'iset/kl.inc'
 include 'iset/gfni.inc'
 include 'iset/pclmulqdq.inc'
 
