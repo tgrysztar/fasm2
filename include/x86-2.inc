@@ -1379,7 +1379,7 @@ calminstruction mov? dest*,src*
 
 	local	ext, rm, size
 
-	check	@dest.size = 0 & @src.size = 0 & @dest.type <> 'sreg'
+	check	@dest.size = 0 & @src.size = 0 & @dest.type <> 'sreg' & @src.type <> 'sreg'
 	jyes	operand_size_not_specified
 	check	@dest.size <> 0 & @src.size <> 0 & @dest.size <> @src.size
 	jyes	operand_sizes_do_not_match
