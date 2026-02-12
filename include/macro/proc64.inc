@@ -295,9 +295,14 @@ end macro
 
 close@proc equ
 
+define type@proc type@proc
+
+define type@proc.stdcall? 11b
+define type@proc.c? 10001b
+
 macro proc? &statement&
 
-	local _local,params,flag,regs,parmbytes,localbytes,current,tmp,initlocal
+	local procname,params,flag,regs,parmbytes,localbytes,current,parse,initlocal
 
 	macro endp?!
 
@@ -318,67 +323,57 @@ macro proc? &statement&
 
 	end macro
 
-	match name declaration, statement :
+	calminstruction parse &args&
+		local type, reg
+		match procname/name args?, args, /
+		jno error
+		match type/name params?, args, /
+		jno default
+		transform type, type@proc
+		jno default
+		compute flag, type
+		jump flag_ok
+	    default:
+		compute flag, 0
+		arrange params, args
+	    flag_ok:
+		match =uses? regs/name params?, params, /
+		jyes collect_regs
+		arrange regs,
+		exit
+	    collect_regs:
+		match , params
+		jyes done
+		match =, params, params
+		jyes done
+		match reg/name params?, params, /
+		arrange regs, regs,reg
+		jump collect_regs
+	    error:
+		err 'missing name'
+	    done:
+	end calminstruction
+	parse statement
+
+	match name, procname
 	if used name
 	name:
 	namespace name
 	outscope match local?, proclocal
 
-		match =stdcall? args :, declaration
-			define params args
-			flag = 11b
-		else match =stdcall? :, declaration
-			define params
-			flag = 11b
-		else match =c? args :, declaration
-			define params args
-			flag = 10001b
-		else match =c? :, declaration
-			define params
-			flag = 10001b
-		else match args :, declaration
-			define params args
-			flag = 0
-		else
-			define params
-			flag = 0
-		end match
-		define regs
-		match =uses? list, params
-			define params list
-			while 1
-				match =, tail, params
-					define params tail
-					break
-				else match reg tail, params&
-					match more&, tail
-						define params more
-					else
-						define params
-					end match
-					if % = 1
-						regs equ reg
-					else
-						regs equ regs,reg
-					end if
-				else
-					break
-				end match
-			end while
-		else match =, tail, params
-			define params tail
-		end match
-
 		match prologue:reglist, prologue@proc:<regs>
-			prologue name,flags,parmbytes,localbytes,reglist
+			prologue name,flag,parmbytes,localbytes,reglist
 		end match
 
 		virtual at parmbase@proc
 			namespace name
 				match args, params
 					iterate arg, args
+						if flag and 100b
+							indx %%-%+1
+						end if
 						match argname:type, arg
-							label argname:type
+							label ?argname:type
 							rb type
 						else
 							?arg dq ?
@@ -387,7 +382,11 @@ macro proc? &statement&
 				end match
 				parmbytes := $-(parmbase@proc)
 				match p, pcountsuffix
-					name#p = parmbytes/8
+					match base=?, name
+						base#p? := parmbytes/8
+					else
+						name#p := parmbytes/8
+					end match
 				end match
 			end namespace
 		end virtual
@@ -503,4 +502,49 @@ macro proc? &statement&
 			endl
 		end macro
 
+end macro
+
+macro static_rsp_prologue procname,flag,parmbytes,localbytes,reglist
+	local count,loc,frame,current
+	match any, reglist
+		iterate reg, reglist
+			push reg
+			if % = %%
+				count := %
+			end if
+		end iterate
+	else
+		count := 0
+	end match
+	loc = (localbytes+7) and (not 7)
+	if frame & (count+loc shr 3+1) and 1
+		loc = loc + 8
+	end if
+	framebytes@proc equ frame+loc
+	if framebytes@proc
+		sub rsp,framebytes@proc
+	end if
+	localbase@proc equ rsp+frame
+	regsbase@proc equ rsp+frame+loc
+	parmbase@proc equ rsp+frame+loc+count*8+8
+	framesize@proc equ frame
+	fastcall?.frame =: 0
+end macro
+
+macro static_rsp_epilogue procname,flag,parmbytes,localbytes,reglist 
+	if framebytes@proc
+		add rsp,framebytes@proc
+	end if
+	iterate reg, reglist
+		indx %%-%+1
+		pop reg
+	end iterate
+	retn
+end macro
+
+macro static_rsp_close procname,flag,parmbytes,localbytes,reglist
+	match frame, framesize@proc
+		frame := fastcall?.frame
+	end match
+	restore fastcall?.frame
 end macro
