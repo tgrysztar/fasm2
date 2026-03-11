@@ -121,8 +121,6 @@ section '.text' code readable executable
 
   MAIN_FRAME := fastcall.frame
 
-  fastcall.frame = -1
-
 proc WindowProc uses rbx rsi rdi, hwnd,wmsg,wparam,lparam
 	frame
 	mov	[hwnd],rcx

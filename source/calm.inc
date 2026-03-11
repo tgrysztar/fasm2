@@ -881,6 +881,7 @@ alm_arrange:
 	call	pass_context
 	jmp	parsed_name_in_pattern
     ignore_context_before_modifier_in_pattern:
+	inc	esi
 	call	pass_context
 	jmp	wildcard_modifier_in_pattern
     numeric_name_in_pattern:
