@@ -64,9 +64,9 @@ convert_number:
       check_decimal_digits:
 	mov	al,[edx+ebx-1]
 	cmp	al,27h
-	je	check_next_decimal_digit
+	je	check_decimal_padding
 	cmp	al,'_'
-	je	check_next_decimal_digit
+	je	check_decimal_padding
 	cmp	al,'0'
 	jb	unknown_number
 	cmp	al,'9'
@@ -132,6 +132,11 @@ convert_number:
 	pop	edx ebx
 	xor	eax,eax
 	jmp	convert_decimal_number
+      check_decimal_padding:
+	cmp	ebx,ecx
+	jne	check_next_decimal_digit
+	dec	ecx
+	jmp	check_next_decimal_digit
       skip_decimal_digit:
 	inc	edx
 	dec	ebx
