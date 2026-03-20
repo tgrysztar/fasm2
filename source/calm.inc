@@ -3092,7 +3092,7 @@ calm_publish_variable:
 	mov	ecx,[edx+ValueDefinition.value_length]
 	add	ecx,esi
 	mov	[line_end],ecx
-	and	[symbol_definition],0
+	or	[symbol_definition],1
 	mov	dl,SYMCLASS_EXPRESSION
 	call	identify_symbol
 	mov	eax,esi
