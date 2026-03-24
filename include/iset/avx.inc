@@ -2646,27 +2646,42 @@ end iterate
 		AVX_512.basic_instruction_imm8 VEX_66_0F3A_W0,EVEX_FORBIDDEN,6,32,dest,src,src2,imm
 	end macro
 
-
-iterate <instr,lcode>, vfmaddsub,6, vfmsubadd,7, vfmaddsub,8, vfmsub,0Ah, vfnmadd,0Ch, vfnmsub,0Eh
+iterate <instr,lcode>, vfmaddsub,6, vfmsubadd,7, vfmadd,8, vfmsub,0Ah, vfnmadd,0Ch, vfnmsub,0Eh
 
 	iterate <order,hcode>, 132,90h, 213,0A0h, 231,0B0h
 
 		macro instr#order#pd? dest*,src*,src2*&
-			AVX_512.basic_instruction_bcst_er VEX_66_0F38_W1,EVEX_AS_VEX+EVEX_VL,hcode+lcode,8,dest,src,src2
+			if x86.ext and x86.FMA.ext
+				AVX_512.basic_instruction_bcst_er VEX_66_0F38_W1,EVEX_AS_VEX+EVEX_VL,hcode+lcode,8,dest,src,src2
+			else
+				AVX_512.basic_instruction_bcst_er VEX_66_0F38_W1,EVEX_REQUIRED+EVEX_VL,hcode+lcode,8,dest,src,src2
+			end if
 		end macro
 
 		macro instr#order#ps? dest*,src*,src2*&
-			AVX_512.basic_instruction_bcst_er VEX_66_0F38_W0,EVEX_AS_VEX+EVEX_VL,hcode+lcode,4,dest,src,src2
+			if x86.ext and x86.FMA.ext
+				AVX_512.basic_instruction_bcst_er VEX_66_0F38_W0,EVEX_AS_VEX+EVEX_VL,hcode+lcode,4,dest,src,src2
+			else
+				AVX_512.basic_instruction_bcst_er VEX_66_0F38_W0,EVEX_REQUIRED+EVEX_VL,hcode+lcode,4,dest,src,src2
+			end if
 		end macro
 
 		if lcode > 7
 
 			macro instr#order#sd? dest*,src*,src2*&
-				AVX_512.basic_instruction_er VEX_66_0F38_W1,EVEX_AS_VEX,hcode+lcode+1,8,dest,src,src2
+				if x86.ext and x86.FMA.ext
+					AVX_512.basic_instruction_er VEX_66_0F38_W1,EVEX_AS_VEX,hcode+lcode+1,8,dest,src,src2
+				else
+					AVX_512.basic_instruction_er VEX_66_0F38_W1,EVEX_REQUIRED,hcode+lcode+1,8,dest,src,src2
+				end if
 			end macro
 
 			macro instr#order#ss? dest*,src*,src2*&
-				AVX_512.basic_instruction_er VEX_66_0F38_W0,EVEX_AS_VEX,hcode+lcode+1,4,dest,src,src2
+				if x86.ext and x86.FMA.ext
+					AVX_512.basic_instruction_er VEX_66_0F38_W0,EVEX_AS_VEX,hcode+lcode+1,4,dest,src,src2
+				else
+					AVX_512.basic_instruction_er VEX_66_0F38_W0,EVEX_REQUIRED,hcode+lcode+1,4,dest,src,src2
+				end if
 			end macro
 
 		end if
@@ -4136,38 +4151,6 @@ iterate <instr,unit,vex_mpw,opcode>, vpconflictd,4,VEX_66_0F38_W0,0C4h, vpconfli
 		require AVX512CD
 		AVX_512.single_source_instruction_bcst vex_mpw,EVEX_REQUIRED+EVEX_VL,opcode,unit,dest,src
 	end macro
-
-end iterate
-
-iterate <instr,lcode>, vfmaddsub,6, vfmsubadd,7, vfmadd,8, vfmsub,0Ah, vfnmadd,0Ch, vfnmsub,0Eh
-
-	iterate <order,hcode>, 132,90h, 213,0A0h, 231,0B0h
-
-		macro instr#order#pd? dest*,src*,src2*
-			require FMA
-			AVX_512.basic_instruction VEX_66_0F38_W1,EVEX_FORBIDDEN,hcode+lcode,0,dest,src,src2
-		end macro
-
-		macro instr#order#ps? dest*,src*,src2*
-			require FMA
-			AVX_512.basic_instruction VEX_66_0F38_W0,EVEX_FORBIDDEN,hcode+lcode,0,dest,src,src2
-		end macro
-
-		if lcode > 7
-
-			macro instr#order#sd? dest*,src*,src2*
-				require FMA
-				AVX_512.basic_instruction VEX_66_0F38_W1,EVEX_FORBIDDEN,hcode+lcode+1,8,dest,src,src2
-			end macro
-
-			macro instr#order#ss? dest*,src*,src2*
-				require FMA
-				AVX_512.basic_instruction VEX_66_0F38_W0,EVEX_FORBIDDEN,hcode+lcode+1,4,dest,src,src2
-			end macro
-
-		end if
-
-	end iterate
 
 end iterate
 
