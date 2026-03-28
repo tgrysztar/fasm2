@@ -202,6 +202,7 @@ iterate context, @dest,@src,@src2,@aux
 
 		    invalid_operand:
 			err	'invalid operand'
+			exit
 
 		    mem_bcst:
 			call	AVX_512.parse_operand#context, operand
