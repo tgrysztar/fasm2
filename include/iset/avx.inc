@@ -610,7 +610,7 @@ iterate context, @dest,@src,@src2,@aux
 			check	displacement_size
 			jno	no_displacement_compression
 			compute displacement, displacement
-			check	(mode > 16 & rm = 5) | (mode = 16 & rm = 6)
+			check	(mode > 16 & mod = 0 & rm = 5) | (mode = 16 & mod = 0 & rm = 6)
 			jyes	no_displacement_compression
 			check	memsize
 			jyes	displacement_compression
