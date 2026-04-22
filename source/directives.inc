@@ -4281,6 +4281,9 @@ include_data:
 	pop	esi
 	jmp	instruction_assembled
     data_file_not_found:
+	xor	al,al
+	mov	ecx,[data_length]
+	rep	stosb
 	mov	ebx,esi
 	mov	edx,_source_file_not_found
 	call	register_error

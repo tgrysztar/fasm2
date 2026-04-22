@@ -122,7 +122,11 @@ section '.text' code readable executable
   MAIN_FRAME := fastcall.frame
 
 proc WindowProc uses rbx rsi rdi, hwnd,wmsg,wparam,lparam
-	frame
+
+  fastcall.frame = 0
+  ; default proc epilogue restores rsp from rbp, thus releasing the space reserved here:
+	sub	rsp,WNDPROC_FRAME
+
 	mov	[hwnd],rcx
 	cmp	edx,WM_CREATE
 	je	wmcreate
@@ -283,7 +287,9 @@ proc WindowProc uses rbx rsi rdi, hwnd,wmsg,wparam,lparam
   context_not_created:
 	invoke	MessageBox,[hwnd],_context_not_created,NULL,MB_ICONERROR+MB_OK
 	jmp	exit
-	endf
+
+  WNDPROC_FRAME := fastcall.frame
+
 endp
 
 section '.rdata' data readable

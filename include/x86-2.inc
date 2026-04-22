@@ -1,5 +1,5 @@
 
-; Advanced x86 Encoder.
+; Advanced x86 Encoder
 
 define x86 x86
 define x87 x87
@@ -224,7 +224,7 @@ end macro
 
 	everything: cpu = 8, fpu = 5, simd = 60, ext = -1
 
-	; Following settings are just hints of a preference, instruction encoder may listen to them
+	; The following settings are just hints of a preference, instruction encoder may listen to them
 	; when it is possible without altering the meaning of the instruction.
 
 	immauto: immsize = 0
@@ -233,7 +233,7 @@ end macro
 	imm32: immsize = 4
 	imm64: immsize = 8
 
-	; Following settings select the position of r/m operand for few instructions that
+	; The following settings select the position of r/m operand for few instructions that
 	; can be encoded either way, and are ignored otherwise.
 
 	rmauto: rmposition = 0
@@ -242,19 +242,19 @@ end macro
 	rm2: rmposition = 2
 	rmsrc: rmposition = 2
 
-	; Enable or disable automatic RIP-relative addressing in long mode.
+	; Enable or disable automatic RIP-relative addressing in long mode:
 
 	ripauto: userip = 0
 	rip: userip = 1
 	norip: userip = -1
 	absolute: userip = -1
 
-	; Enable or disable SIB addressing enforcement
+	; Enable or disable SIB addressing enforcement:
 
 	sibauto: usesib = 0
 	sib: usesib = 1
 
-	; VEX size preference
+	; VEX size preference:
 
 	vexauto: vexsize = 0
 	vex2: vexsize = 2
