@@ -615,6 +615,16 @@ define_label:
 	mov	[line_start],esi
 	mov	eax,[embedded_context]
 	mov	[line_context],eax
+	mov	eax,[local_namespace]
+	test	eax,eax
+	jz	update_context_after_label
+	cmp	[eax+SymbolTree_Root.current_label],0
+	jne	context_after_label_ok
+    update_context_after_label:
+	mov	eax,[current_context.base_namespace]
+	mov	ecx,[eax+SymbolTree_Root.current_label]
+	mov	[current_context.base_label],ecx
+    context_after_label_ok:
 	jmp	assemble_instruction
     define_area_label:
 	inc	esi
