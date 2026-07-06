@@ -509,7 +509,7 @@ iterate context, @dest,@src,@src2,@aux
 			check	segment_prefix
 			jno	segment_prefix_ok
 
-			check	mode = 64
+			check	x86.mode = 64
 			jyes	segment_in_long_mode
 			check	mode = 16 & ( rm = 2 | rm = 3 | ( mod > 0 & rm = 6 ) )
 			jyes	ss_segment_default

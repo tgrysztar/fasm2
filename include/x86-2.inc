@@ -966,7 +966,7 @@ iterate context, @dest,@src,@src2,@aux
 			check	segment_prefix
 			jno	segment_prefix_ok
 
-			check	mode = 64
+			check	x86.mode = 64
 			jyes	segment_in_long_mode
 			check	mode = 16 & ( rm = 2 | rm = 3 | ( mod > 0 & rm = 6 ) )
 			jyes	ss_segment_default
@@ -2010,6 +2010,10 @@ calminstruction x86.push_instruction size:0,src*
 	exit
 
     push_mem:
+	check	size
+	jyes	mem_size_ok
+	err	'operand size not specified'
+      mem_size_ok:
 	xcall	x86.store_instruction@src, (0FFh),(110b)
 	exit
 
@@ -2132,6 +2136,10 @@ calminstruction x86.pop_instruction size:0,dest*
 	exit
 
     pop_mem:
+	check	size
+	jyes	mem_size_ok
+	err	'operand size not specified'
+      mem_size_ok:
 	xcall	x86.store_instruction@dest, (8Fh),(0)
 	exit
 
@@ -2627,7 +2635,7 @@ calminstruction call? dest*
 	check	@dest.jump_type = 'near'
 	jyes	call_rm_near
 	err	'operand size not specified'
-	exit
+	jump	call_rm_near
 
       call_rm_pword:
 	check	@dest.jump_type & @dest.jump_type <> 'far'
@@ -2765,7 +2773,7 @@ calminstruction jmp? dest*
 	check	@dest.jump_type = 'near'
 	jyes	jmp_rm_near
 	err	'operand size not specified'
-	exit
+	jump	jmp_rm_near
 
       jmp_rm_pword:
 	check	@dest.jump_type & @dest.jump_type <> 'far'
