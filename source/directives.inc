@@ -4743,8 +4743,11 @@ format_binary:
 	jne	invalid_argument
 	mov	edi,esi
 	mov	ecx,[edx]
-	lea	esi,[edx+4]
 	mov	[output_extension_length],ecx
+	mov	esi,zero_value
+	jecxz	store_extension
+	lea	esi,[edx+4]
+    store_extension:
 	mov	ebx,[auxiliary_output_areas]
 	call	get_from_map
 	jnc	extension_stored

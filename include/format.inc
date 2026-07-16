@@ -1,5 +1,16 @@
 
-define format? format.extension
+define format? format?.default_extension
+
+format?.default_extension = 'bin'
+
+define format? format?.extension
+
+macro org? base*
+	if base eq 100h & $% = 0
+		format?.default_extension = 'com'
+	end if
+	org base
+end macro
 
 calminstruction format? statement*
 	check $% = 0
@@ -9,15 +20,18 @@ calminstruction format? statement*
 	local ext
 	match statement =as? ext, statement
 	jno pass
-	publish format:, ext
+	publish format?:, ext
     pass:
 	arrange statement, =format statement
 	assemble statement
 end calminstruction
 
 postpone
-	if definite format
-		format.binary as format
+	if ~ definite format?
+		restore format?
+	end if
+	if format?
+		format?.binary as format?
 	end if
 end postpone
 
@@ -40,9 +54,7 @@ end macro
 local_include __include
 
 macro format?.MZ?
-	if ~ definite format
-		format binary as 'exe'
-	end if
+	format?.default_extension = 'exe'
 	__include 'format/mz.inc'
 end macro
 
@@ -112,14 +124,12 @@ macro format?.PE? settings
 			end match
 		end match
 	end while
-	if ~ definite format
-		if PE.Settings.Subsystem = IMAGE_SUBSYSTEM_EFI_APPLICATION | PE.Settings.Subsystem = IMAGE_SUBSYSTEM_EFI_BOOT_SERVICE_DRIVER | PE.Settings.Subsystem = IMAGE_SUBSYSTEM_EFI_RUNTIME_DRIVER
-			format binary as 'efi'
-		else if PE.Settings.Characteristics and IMAGE_FILE_DLL
-			format binary as 'dll'
-		else
-			format binary as 'exe'
-		end if
+	if PE.Settings.Subsystem = IMAGE_SUBSYSTEM_EFI_APPLICATION | PE.Settings.Subsystem = IMAGE_SUBSYSTEM_EFI_BOOT_SERVICE_DRIVER | PE.Settings.Subsystem = IMAGE_SUBSYSTEM_EFI_RUNTIME_DRIVER
+		format?.default_extension = 'efi'
+	else if PE.Settings.Characteristics and IMAGE_FILE_DLL
+		format?.default_extension = 'dll'
+	else
+		format?.default_extension = 'exe'
 	end if
 	__include 'format/pe.inc'
 	use32
@@ -189,14 +199,12 @@ macro format?.PE64? settings
 			end match
 		end match
 	end while
-	if ~ definite format
-		if PE.Settings.Subsystem = IMAGE_SUBSYSTEM_EFI_APPLICATION | PE.Settings.Subsystem = IMAGE_SUBSYSTEM_EFI_BOOT_SERVICE_DRIVER | PE.Settings.Subsystem = IMAGE_SUBSYSTEM_EFI_RUNTIME_DRIVER
-			format binary as 'efi'
-		else if PE.Settings.Characteristics and IMAGE_FILE_DLL
-			format binary as 'dll'
-		else
-			format binary as 'exe'
-		end if
+	if PE.Settings.Subsystem = IMAGE_SUBSYSTEM_EFI_APPLICATION | PE.Settings.Subsystem = IMAGE_SUBSYSTEM_EFI_BOOT_SERVICE_DRIVER | PE.Settings.Subsystem = IMAGE_SUBSYSTEM_EFI_RUNTIME_DRIVER
+		format?.default_extension = 'efi'
+	else if PE.Settings.Characteristics and IMAGE_FILE_DLL
+		format?.default_extension = 'dll'
+	else
+		format?.default_extension = 'exe'
 	end if
 	__include 'format/pe.inc'
 	use64
@@ -204,13 +212,12 @@ end macro
 
 macro format?.ELF? variant
 	match , variant
-		if ~ definite format
-			format binary as 'o'
-		end if
+		format?.default_extension = 'o'
 		__include 'format/elf32.inc'
 		use32
 	else match =executable? settings, variant:
 		format executable
+		format?.default_extension = ''
 		match brand =at? base:, settings
 			ELF.Settings.ABI = brand
 			ELF.Settings.BaseAddress = base
@@ -222,6 +229,7 @@ macro format?.ELF? variant
 		__include 'format/elfexe.inc'
 		use32
 	else match =dynamic? settings, variant:
+		format?.default_extension = ''
 		ELF.Settings.Type = ET_DYN
 		match brand =at? base:, settings
 			ELF.Settings.ABI = brand
@@ -240,13 +248,12 @@ end macro
 
 macro format?.ELF64? variant
 	match , variant
-		if ~ definite format
-			format binary as 'o'
-		end if
+		format?.default_extension = 'o'
 		__include 'format/elf64.inc'
 		use64
 	else match =executable? settings, variant:
 		format executable
+		format?.default_extension = ''
 		ELF.Settings.Class = ELFCLASS64
 		ELF.Settings.Machine = EM_X86_64
 		ELF.Settings.BaseAddress = 400000h
@@ -261,6 +268,7 @@ macro format?.ELF64? variant
 		__include 'format/elfexe.inc'
 		use64
 	else match =dynamic? settings, variant:
+		format?.default_extension = ''
 		ELF.Settings.Class = ELFCLASS64
 		ELF.Settings.Type = ET_DYN
 		ELF.Settings.Machine = EM_X86_64
@@ -282,13 +290,12 @@ end macro
 
 macro format?.ELFx32? variant
 	match , variant
-		if ~ definite format
-			format binary as 'o'
-		end if
+		format?.default_extension = 'o'
 		ELF.Settings.Machine = EM_X86_64
 		__include 'format/elf32.inc'
 		use64
 	else match =executable? settings, variant:
+		format?.default_extension = ''
 		ELF.Settings.Class = ELFCLASS32
 		ELF.Settings.Machine = EM_X86_64
 		ELF.Settings.BaseAddress = 400000h
@@ -308,18 +315,14 @@ macro format?.ELFx32? variant
 end macro
 
 macro format?.COFF?
-	if ~ definite format
-		format binary as 'obj'
-	end if
+	format?.default_extension = 'obj'
 	__include 'format/coff.inc'
 	use32
 end macro
 
 macro format?.MS? variant
 	match =COFF?, variant
-		if ~ definite format
-			format binary as 'obj'
-		end if
+		format?.default_extension = 'obj'
 		COFF.Settings.Characteristics = IMAGE_FILE_32BIT_MACHINE or IMAGE_FILE_LINE_NUMS_STRIPPED or IMAGE_FILE_BYTES_REVERSED_LO
 		__include 'format/coffms.inc'
 		use32
@@ -330,9 +333,7 @@ end macro
 
 macro format?.MS64? variant
 	match =COFF?, variant
-		if ~ definite format
-			format binary as 'obj'
-		end if
+		format?.default_extension = 'obj'
 		COFF.Settings.Machine = IMAGE_FILE_MACHINE_AMD64
 		COFF.Settings.Characteristics = IMAGE_FILE_32BIT_MACHINE or IMAGE_FILE_LINE_NUMS_STRIPPED or IMAGE_FILE_BYTES_REVERSED_LO
 		__include 'format/coffms.inc'
@@ -344,17 +345,17 @@ end macro
 
 macro format?.MachO? variant
 	match , variant
-		if ~ definite format
-			format binary as 'o'
-		end if
+		format?.default_extension = 'o'
 		MachO.Settings.FileType equ MH_OBJECT
 		__include 'format/macho.inc'
 		use32
 	else match =executable?, variant
+		format?.default_extension = ''
 		MachO.Settings.BaseAddress = 0x1000
 		__include 'format/macho.inc'
 		use32
 	else match =executable? at? base, variant
+		format?.default_extension = ''
 		MachO.Settings.BaseAddress = base
 		__include 'format/macho.inc'
 		use32
@@ -367,17 +368,17 @@ macro format?.MachO64? variant
 	MachO.Settings.ProcessorType equ CPU_TYPE_X86_64
 	MachO.Settings.ProcessorSubtype equ CPU_SUBTYPE_X86_64_ALL
 	match , variant
-		if ~ definite format
-			format binary as 'o'
-		end if
+		format?.default_extension = 'o'
 		MachO.Settings.FileType equ MH_OBJECT
 		__include 'format/macho.inc'
 		use64
 	else match =executable?, variant
+		format?.default_extension = ''
 		MachO.Settings.BaseAddress = 0x100000000
 		__include 'format/macho.inc'
 		use64
 	else match =executable? =at? base, variant
+		format?.default_extension = ''
 		MachO.Settings.BaseAddress = base
 		__include 'format/macho.inc'
 		use64
