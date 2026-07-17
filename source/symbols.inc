@@ -931,9 +931,9 @@ create_value_definition:
 	mov	[ebx+SymbolTree_Leaf.definition],edx
 	xchg	eax,[edx+ValueDefinition.previous]
 	mov	[ebx+SymbolTree_Leaf.retired_definition],eax
-	cmp	[edx+ValueDefinition.reference_count],0
-	jne	add_value_definition
 	inc	[edx+ValueDefinition.reference_count]
+	cmp	[edx+ValueDefinition.reference_count],1
+	jne	add_value_definition
 	test	[ebx+SymbolTree_Leaf.flags],SYM_VARIABLE
 	jnz	reset_value_type
 	retn
